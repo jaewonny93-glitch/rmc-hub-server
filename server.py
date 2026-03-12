@@ -36,8 +36,10 @@ if not os.path.exists(FORMS_META_FILE):
 
 LOCK = threading.Lock()
 
-# ── 폰트 경로 ──
-_FONT_DIR = "/usr/share/fonts/truetype/nanum"
+# ── 폰트 경로 (Railway: 프로젝트 내 fonts/ 폴더 우선, 없으면 시스템 폰트)
+_FONT_DIR_LOCAL  = os.path.join(_BASE, "fonts")
+_FONT_DIR_SYSTEM = "/usr/share/fonts/truetype/nanum"
+_FONT_DIR = _FONT_DIR_LOCAL if os.path.exists(_FONT_DIR_LOCAL) else _FONT_DIR_SYSTEM
 _F_REGULAR = os.path.join(_FONT_DIR, "NanumGothic.ttf")
 _F_BOLD    = os.path.join(_FONT_DIR, "NanumGothicBold.ttf")
 _F_EXTRABOLD = os.path.join(_FONT_DIR, "NanumGothicExtraBold.ttf")
