@@ -204,9 +204,12 @@ def generate_quote_image(order: dict) -> bytes:
 
         name  = str(item.get("name", ""))
         unit  = str(item.get("unit", ""))
-        price = int(item.get("price", 0))
-        qty   = int(item.get("qty", 0))
-        subtotal = price * qty
+        # price 또는 unitPrice 모두 지원 (Flutter 앱은 'price' 사용)
+        price = int(item.get("price", item.get("unitPrice", 0)))
+        # qty 또는 quantity 모두 지원 (Flutter 앱은 'qty' 사용)
+        qty   = int(item.get("qty", item.get("quantity", 0)))
+        # totalPrice가 있으면 그것을 사용, 없으면 계산
+        subtotal = int(item.get("totalPrice", price * qty))
         subtotal_check += subtotal
 
         cells = [name, unit, _num(price), str(qty), _num(subtotal)]
