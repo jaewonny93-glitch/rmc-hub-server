@@ -1,0 +1,54 @@
+{
+    "name": "RMC Hub - 재생의학센터",
+    "short_name": "RMC Hub",
+    "description": "분당서울대학교병원 재생의학센터 공식 앱",
+    "start_url": "/",
+    "display": "standalone",
+    "orientation": "portrait-primary",
+    "background_color": "#1A237E",
+    "theme_color": "#1A237E",
+    "prefer_related_applications": false,
+    "scope": "/",
+    "lang": "ko-KR",
+    "categories": ["medical", "health"],
+    "icons": [
+        {
+            "src": "icons/Icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/Icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/Icon-maskable-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "icons/Icon-maskable-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Clean Bench 예약",
+            "short_name": "예약",
+            "description": "Clean Bench 예약하기",
+            "url": "/",
+            "icons": [{"src": "icons/Icon-192.png", "sizes": "192x192"}]
+        },
+        {
+            "name": "재료 구매",
+            "short_name": "구매",
+            "description": "실험 재료 구매 신청",
+            "url": "/",
+            "icons": [{"src": "icons/Icon-192.png", "sizes": "192x192"}]
+        }
+    ]
+}

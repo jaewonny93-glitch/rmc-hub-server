@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <base href="/">
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="분당서울대학교병원 재생의학센터 공식 앱 - 오가노이드 서비스, Clean Bench 예약, 재료 구매">
+  <meta name="keywords" content="재생의학센터, 오가노이드, 분당서울대병원, RMC, 첨단재생의료">
+
+  <!-- ── Android PWA ── -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#1A237E">
+
+  <!-- ── iOS PWA (Safari 홈 화면 추가) ── -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="RMC Hub">
+
+  <!-- iOS 아이콘 (여러 사이즈) -->
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="icons/Icon-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="icons/Icon-192.png">
+
+  <!-- iOS 스플래시 스크린 배경색 -->
+  <meta name="msapplication-TileColor" content="#1A237E">
+  <meta name="msapplication-TileImage" content="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+  <link rel="shortcut icon" href="favicon.png">
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json">
+
+  <title>RMC Hub - 재생의학센터</title>
+
+  <style>
+    /* PWA 로딩 스플래시 */
+    body {
+      margin: 0;
+      background-color: #1A237E;
+    }
+    #pwa-splash {
+      position: fixed;
+      inset: 0;
+      background: #1A237E;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease;
+    }
+    #pwa-splash.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    #pwa-splash img {
+      width: 100px;
+      height: 100px;
+      border-radius: 22px;
+      margin-bottom: 20px;
+    }
+    #pwa-splash h1 {
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      margin: 0 0 6px 0;
+      letter-spacing: 1px;
+    }
+    #pwa-splash p {
+      color: rgba(255,255,255,0.7);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 14px;
+      margin: 0;
+    }
+    #pwa-splash .loader {
+      margin-top: 48px;
+      width: 36px;
+      height: 36px;
+      border: 3px solid rgba(255,255,255,0.25);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <!-- PWA 네이티브 스플래시 -->
+  <div id="pwa-splash">
+    <img src="icons/Icon-192.png" alt="RMC Hub">
+    <h1>RMC Hub</h1>
+    <p>분당서울대학교병원 재생의학센터</p>
+    <div class="loader"></div>
+  </div>
+
+  <script src="flutter_bootstrap.js" async></script>
+
+  <script>
+    // Flutter 로드 완료 후 스플래시 숨김
+    window.addEventListener('flutter-first-frame', function() {
+      var splash = document.getElementById('pwa-splash');
+      if (splash) {
+        splash.classList.add('hidden');
+        setTimeout(function() { splash.remove(); }, 600);
+      }
+    });
+
+    // PWA 설치 프롬프트 저장 (Android Chrome 자동 배너)
+    window.deferredPrompt = null;
+    window.addEventListener('beforeinstallprompt', function(e) {
+      e.preventDefault();
+      window.deferredPrompt = e;
+    });
+  </script>
+</body>
+</html>
