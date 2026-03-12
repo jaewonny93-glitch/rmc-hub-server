@@ -34,6 +34,38 @@ if not os.path.exists(FORMS_META_FILE):
     with open(FORMS_META_FILE, "w") as f:
         json.dump([], f)
 
+# ── 기본 공지 초기화 (서버 최초 기동 시 notices.json이 없을 때만 생성)
+_NOTICES_FILE = os.path.join(DATA_DIR, "notices.json")
+if not os.path.exists(_NOTICES_FILE):
+    _default_notices = [
+        {
+            "id": "n001",
+            "title": "[재생의학센터] 정기세미나 일정 안내(6/13(금) 오전09:00, 온/오프라인)",
+            "content": "안녕하십니까, 재생의학센터입니다.\n\n6월 정기세미나를 아래와 같이 개최합니다.\n\n■ 일시: 2025년 6월 13일(금) 오전 09:00\n■ 장소: 헬스케어혁신파크 세미나실 + Zoom 병행\n■ 주제: 오가노이드 기반 재생의료 최신 연구 동향\n\n많은 참석 바랍니다.",
+            "date": "2025.06.13",
+            "category": "세미나",
+            "isNew": False,
+        },
+        {
+            "id": "n002",
+            "title": "[오가노이드뱅크 연구사업단] 오픈이노베이션 세미나 공지 (6/11 오후12시)",
+            "content": "오가노이드뱅크 연구사업단 주최 오픈이노베이션 세미나를 개최합니다.\n\n■ 일시: 2025년 6월 11일(수) 오후 12:00\n■ 형식: 온/오프라인 동시 진행",
+            "date": "2025.06.11",
+            "category": "세미나",
+            "isNew": False,
+        },
+        {
+            "id": "n003",
+            "title": "[재생의학센터] 첨단재생의료 치료계획 가이드라인 배포",
+            "content": "재생의학센터에서 첨단재생의료 치료계획 가이드라인을 배포합니다.\n\n문의: rmc01@snubh.org",
+            "date": "2025.04.17",
+            "category": "자료",
+            "isNew": False,
+        },
+    ]
+    with open(_NOTICES_FILE, "w", encoding="utf-8") as _f:
+        json.dump(_default_notices, _f, ensure_ascii=False, indent=2)
+
 LOCK = threading.Lock()
 
 # ── 폰트 경로 (Railway: 프로젝트 내 fonts/ 폴더 우선, 없으면 시스템 폰트)
