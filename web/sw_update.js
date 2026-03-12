@@ -46,13 +46,8 @@ self.addEventListener('activate', (event) => {
     }).then(() => {
       // 모든 열린 탭/창을 즉시 새 SW로 제어
       return self.clients.claim();
-    }).then(() => {
-      // 제어 중인 모든 클라이언트에 업데이트 완료 알림 → 새로고침 유도
-      return self.clients.matchAll({ type: 'window' }).then((clients) => {
-        clients.forEach((client) => {
-          client.postMessage({ type: 'SW_UPDATED', version: CACHE_VERSION });
-        });
-      });
+      // ※ 클라이언트에 새로고침 메시지 안 보냄 - 방문자 입력 루프 방지
+      // 새 버전은 다음 앱 실행 시 자연스럽게 적용됨
     })
   );
 });

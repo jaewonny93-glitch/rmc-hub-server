@@ -165,22 +165,13 @@
       navigator.serviceWorker.addEventListener('message', function(event) {
         if (event.data && event.data.type === 'SW_UPDATED') {
           console.log('[PWA] Updated to version:', event.data.version);
-          // 약간의 딜레이 후 새로고침 (앱 로딩 중 방해 방지)
-          setTimeout(function() {
-            window.location.reload();
-          }, 1000);
+          // 앱이 완전히 로드된 후에만 새로고침 (로딩 루프 방지)
+          // 새로고침은 하지 않음 - 다음 앱 실행 시 자동 적용됨
         }
       });
 
-      // 컨트롤러가 바뀌면(새 SW 활성화) 자동 새로고침
-      var refreshing = false;
-      navigator.serviceWorker.addEventListener('controllerchange', function() {
-        if (!refreshing) {
-          refreshing = true;
-          console.log('[PWA] Controller changed, reloading...');
-          window.location.reload();
-        }
-      });
+      // ※ controllerchange 자동 새로고침 제거 - 방문자 입력 루프 방지
+      // 새 SW는 다음 앱 실행 시 자연스럽게 적용됨
     }
   </script>
 </body>
