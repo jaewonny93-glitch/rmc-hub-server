@@ -111,6 +111,15 @@
       }
     });
 
+    // 혹시 flutter-first-frame 이벤트 누락 대비 (10초 후 강제 숨김)
+    setTimeout(function() {
+      var splash = document.getElementById('pwa-splash');
+      if (splash) {
+        splash.classList.add('hidden');
+        setTimeout(function() { if(splash.parentNode) splash.remove(); }, 600);
+      }
+    }, 10000);
+
     // PWA 설치 프롬프트 저장 (Android Chrome 자동 배너)
     window.deferredPrompt = null;
     window.addEventListener('beforeinstallprompt', function(e) {
@@ -118,60 +127,38 @@
       window.deferredPrompt = e;
     });
 
-    // ── 자동 업데이트 Service Worker 등록 ──
+    // ── Service Worker: sw_update.js 하나만 등록 ──
     if ('serviceWorker' in navigator) {
-      // 기존 Flutter SW 등록 해제 후 커스텀 SW 등록
+      // 기존 SW 전부 해제 (flutter_service_worker 충돌 방지)
       navigator.serviceWorker.getRegistrations().then(function(registrations) {
-        // 이미 등록된 SW 목록 확인
+        var unregisterPromises = [];
         registrations.forEach(function(reg) {
-          // flutter_service_worker 가 아닌 우리 SW가 아닌 경우 해제
-          if (reg.active && reg.active.scriptURL.indexOf('sw_update.js') === -1) {
-            console.log('[PWA] Unregistering old SW:', reg.active.scriptURL);
-            reg.unregister();
+          if (!reg.active || reg.active.scriptURL.indexOf('sw_update.js') === -1) {
+            console.log('[PWA] Unregistering conflicting SW:', reg.scope);
+            unregisterPromises.push(reg.unregister());
           }
         });
-      });
-
-      // 커스텀 자동 업데이트 SW 등록
-      navigator.serviceWorker.register('/sw_update.js', { scope: '/' })
-        .then(function(registration) {
-          console.log('[PWA] Auto-update SW registered');
-
-          // 1분마다 업데이트 체크
-          setInterval(function() {
-            registration.update();
-            console.log('[PWA] Checking for updates...');
-          }, 60000);
-
-          // 새 SW가 설치 대기 중이면 즉시 활성화
-          registration.addEventListener('updatefound', function() {
-            var newWorker = registration.installing;
-            console.log('[PWA] New version found! Installing...');
-            if (newWorker) {
-              newWorker.addEventListener('statechange', function() {
-                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                  console.log('[PWA] New version installed, activating...');
-                  newWorker.postMessage('skipWaiting');
-                }
-              });
-            }
-          });
-        })
-        .catch(function(err) {
-          console.log('[PWA] SW registration failed:', err);
+        return Promise.all(unregisterPromises);
+      }).then(function() {
+        // sw_update.js 하나만 등록
+        return navigator.serviceWorker.register('/sw_update.js', { scope: '/' });
+      }).then(function(registration) {
+        console.log('[PWA] sw_update.js registered');
+        // 1분마다 업데이트 체크
+        setInterval(function() { registration.update(); }, 60000);
+        registration.addEventListener('updatefound', function() {
+          var newWorker = registration.installing;
+          if (newWorker) {
+            newWorker.addEventListener('statechange', function() {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                newWorker.postMessage('skipWaiting');
+              }
+            });
+          }
         });
-
-      // SW가 업데이트 완료 메시지 보내면 페이지 자동 새로고침
-      navigator.serviceWorker.addEventListener('message', function(event) {
-        if (event.data && event.data.type === 'SW_UPDATED') {
-          console.log('[PWA] Updated to version:', event.data.version);
-          // 앱이 완전히 로드된 후에만 새로고침 (로딩 루프 방지)
-          // 새로고침은 하지 않음 - 다음 앱 실행 시 자동 적용됨
-        }
+      }).catch(function(err) {
+        console.log('[PWA] SW registration failed:', err);
       });
-
-      // ※ controllerchange 자동 새로고침 제거 - 방문자 입력 루프 방지
-      // 새 SW는 다음 앱 실행 시 자연스럽게 적용됨
     }
   </script>
 </body>
